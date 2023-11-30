@@ -1,6 +1,6 @@
 import { getUserCookie } from '@/utils/authOperations'
-import AdminPage from './AdminPage'
-import SubscriberPage from './SubscriberPage'
+import AdminPage from '../pages/Admin/AdminPage'
+import SubscriberPage from '../pages/Subscriber/SubscriberPage'
 
 const ConditionalPage = () => {
 	const userInformation = getUserCookie()

@@ -6,7 +6,7 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 	const { push } = useRouter()
 	useEffect(() => {
 		const _isTokenExpired = isTokenExpired()
-		if (_isTokenExpired) push('/login')
+		// if (_isTokenExpired) push('/login')
 	}, [push])
 
 	return <div>{children}</div>
