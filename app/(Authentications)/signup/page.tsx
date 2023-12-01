@@ -1,11 +1,14 @@
 'use client'
+import { signup } from '@/app/action'
 import CommonButton from '@/app/common/CommonButton'
 import CommonInput from '@/app/common/CommonInput'
+import { useRouter } from 'next/navigation'
 import { FormEvent, useState } from 'react'
 import { toast } from 'react-toastify'
 const SignupPage = () => {
+	const { push } = useRouter()
 	const [signupValue, setSignupValue] = useState({
-		name: '',
+		username: '',
 		email: '',
 		password: '',
 		confirmPassword: '',
@@ -14,13 +17,17 @@ const SignupPage = () => {
 	const onFieldChange = (field: string, value?: string) => {
 		setSignupValue((prev) => ({ ...prev, [field]: value }))
 	}
-	const onFormSubmit = (e: FormEvent) => {
+	const onFormSubmit = async (e: FormEvent) => {
 		e.preventDefault()
-		const { name, email, password, confirmPassword } = signupValue
-		if (name?.length <= 4) return toast.warn('Please enter a valid name')
+		const { username, email, password, confirmPassword } = signupValue
+		if (username?.length <= 4) return toast.warn('Please enter a valid name')
 		if (email?.length <= 6) return toast.warn('Please enter a valid email address')
 		if (password?.length <= 4) return toast.warn('Password must be at least 4 characters')
 		if (password !== confirmPassword) return toast.warn('Password must be matched')
+		const signupResponse = await signup({ username, email, password })
+		if (signupResponse?.status !== 200) return toast.error(signupResponse?.message)
+		toast.success(signupResponse.message)
+		push('/login')
 	}
 	return (
 		<div className='h-screen flex justify-center place-items-center flex-col'>
@@ -28,8 +35,8 @@ const SignupPage = () => {
 				<p className='text-2xl text-center'>Signup</p>
 				<CommonInput
 					label='Name'
-					value={signupValue.name}
-					onChange={(value) => onFieldChange('name', value)}
+					value={signupValue.username}
+					onChange={(value) => onFieldChange('username', value)}
 				/>
 
 				<CommonInput
@@ -50,7 +57,13 @@ const SignupPage = () => {
 					value={signupValue.confirmPassword}
 					onChange={(value) => onFieldChange('confirmPassword', value)}
 				/>
-				<CommonButton title='Submit' type='submit' fullWidth />
+				<CommonButton title='Submit' type='submit' fullWidth isPrimary />
+				<p
+					className='text-center text-gray-500 cursor-pointer'
+					onClick={() => push('/login')}
+				>
+					Already have an account?{' '}
+				</p>
 			</form>
 		</div>
 	)
