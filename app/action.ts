@@ -97,10 +97,10 @@ export async function createAndUpdatePackage(packageObj: TPackage) {
 	}
 	try {
 		const { id, package_name } = packageObj
-		const getPackageQuery = `SELECT package_name FROM package WHERE package_name='${package_name}'`
+		const getPackageQuery = `SELECT * FROM package WHERE package_name='${package_name}'`
 		const [row] = await pool.query(getPackageQuery)
 		// @ts-ignore
-		if (row?.length > 0) {
+		if (row?.length > 0 && row?.[0]?.id !== id) {
 			response.message = 'Duplicate Package Detected'
 			return response
 		}
